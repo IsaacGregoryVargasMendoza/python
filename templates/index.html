@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilosVideo.css') }}"">
+    <title>Lectura de lenguaje de señas</title>
+</head>
+<body>
+    <div class="text-center">
+        <div class="main-header">
+            <div class="background-overlay">
+                <h1 class="text-center text-white">Ingrese su pedido en lenguaje de señas</h1>
+                <img src="{{ url_for('video')}}" height="670" width="1000">
+                <div class="text-center">
+                    <a href="/pagina" class="btn btn-primary">Limpiar</a>
+                    <a href="/pagina" class="btn btn-primary"><</a>
+                    <a href="/pagina" class="btn btn-primary">=</a>
+                    <a href="/pagina" class="btn btn-primary">></a>
+                    <a href="/pagina" class="btn btn-primary">Siguiente</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+    <script type="text/javascript" charset="utf-8">
+        // var socket = io();
+        // socket.on('connect', function() {
+        //     socket.emit('message', "Prueba");
+        //     console.log("conectados");
+        // });
+
+        // socket.on('message', function(msg){
+        //     document.getElementById('mensaje').textContent=msg
+        // })
+
+        // async function probar(){
+        //     socket.emit('message', "Isaac Probando");
+        // }
+    </script>
+</body>
+</html>
