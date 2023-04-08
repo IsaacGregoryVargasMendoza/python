@@ -20,12 +20,12 @@
         <div class="main-header">
             <div class="background-overlay">
                 <h1 class="text-center text-white">Ingrese su pedido en lenguaje de señas</h1>
+                <input type="text" id="txtPalabras">
                 <div class="video-wrap">
                     <video id="video" width="800" height="800" playsinline autoplay></video>
                 </div>
 
                 <canvas id="canvas" width="800" height="800" style="max-width: 100%;"></canvas>
-                <!-- <img src="{{ url_for('video')}}" height="670" width="1000"> -->
                 <div class="text-center">
                     <a href="/pagina" class="btn btn-primary">Limpiar</a>
                     <a href="/pagina" class="btn btn-primary"><</a>
@@ -38,14 +38,10 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/hand-pose-detection"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands"></script>
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/tensorflow/4.3.0/tf.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script> -->
     <script>
-        // const snap = document.getElementById("snap");
-        // const canvas = document.getElementById('canvas');
-        // const errorMsgElement = document.querySelector('span#errorMsg');
         const video = document.getElementById('video');
         var canvas = document.getElementById("canvas");
+        var palabras = document.getElementById("txtPalabras");
 
         var currentStream = null;
         var size = 800;
@@ -82,79 +78,46 @@
                 }
                 
             } catch (e) {
-                // errorMsgElement.innerHTML = `navigator.getUserMedia error:${e.toString()}`;
             }
         }
 
         function procesarCamara() {
-          
           var ctx = canvas.getContext("2d");
-
           ctx.drawImage(video, 0, 0, size, size, 0, 0, size, size);
-
           setTimeout(procesarCamara, 20);
         }
 
         async function predecir() {
 
-            var ctx2 = canvas.getContext("2d");
+            // var ctx2 = canvas.getContext("2d");
+            // ctx2.getImageData(0,0,800,800);
+            // canvas.toDataURL();
+            // console.log(canvas.toDataURL());
+            //console.log("prueba..");
 
-            const model = handPoseDetection.SupportedModels.MediaPipeHands;
-            const detectorConfig = {
-            runtime: 'mediapipe', // or 'tfjs',
-            solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/hands',
-            modelType: 'full'
+            // var fd = new FormData();
+            // const file = new File([blob], "filename.jpeg");
+            // fd.append('imagen', canvas.toDataURL());
+            var response = await fetch('http://127.0.0.1:5000/obtener-letra',
+            {
+                method: 'POST',
+                body: JSON.stringify({
+                    imagen: canvas.toDataURL(),
+                }),
+                headers: {
+                'Content-Type': 'application/json',
+                }
+            })
+            var text = await response.text();
+            console.log(text);
+
+            if(text != "-1"){
+                palabras.value = palabras.value + text;
             }
-            const detector = await handPoseDetection.createDetector(model, detectorConfig);
-            
-            console.log(detector);
-            console.log(canvas.toDataURL());
-            // const hands = await detector.estimateHands(ctx2.getImageData(0,0,800,800));
-            const hands = await detector.estimateHands(canvas.toDataURL());
+            setTimeout(predecir, 500);
 
-            console.log("prueba..");
-            setTimeout(predecir, 1000);
-        //   if (modelo != null) {
-        //       //Pasar canvas a version 150x150
-        //       resample_single(canvas, 150, 150, othercanvas);
+        }
 
-        //       var ctx2 = othercanvas.getContext("2d");
-
-        //       var imgData = ctx2.getImageData(0,0,150,150);
-        //       var arr = []; //El arreglo completo
-        //       var arr150 = []; //Al llegar a arr150 posiciones se pone en 'arr' como un nuevo indice
-        //       for (var p=0, i=0; p < imgData.data.length; p+=4) {
-        //           var red = imgData.data[p]/255;
-        //           var green = imgData.data[p+1]/255;
-        //           var blue = imgData.data[p+2]/255;
-        //           arr150.push([red, green, blue]); //Agregar al arr150 y normalizar a 0-1. Aparte queda dentro de un arreglo en el indice 0... again
-        //           if (arr150.length == 150) {
-        //               arr.push(arr150);
-        //               arr150 = [];
-        //           }
-        //       }
-
-        //       arr = [arr]; //Meter el arreglo en otro arreglo por que si no tio tensorflow se enoja >:(
-        //       //Nah basicamente Debe estar en un arreglo nuevo en el indice 0, por ser un tensor4d en forma 1, 150, 150, 1
-        //       var tensor4 = tf.tensor4d(arr);
-        //       var resultados = modelo.predict(tensor4).dataSync();
-        //       var mayorIndice = resultados.indexOf(Math.max.apply(null, resultados));
-
-        //       var clases = ['Gato', 'Perro'];
-        //       console.log("Prediccion", clases[mayorIndice]);
-        //       document.getElementById("resultado").innerHTML = clases[mayorIndice];
-        //   }
-
-        //   setTimeout(predecir, 150);
-      }
-
-        // detectorDeManos();
-
-        // Dibuja la imagen
-        // var context = canvas.getContext('2d');
-        // snap.addEventListener("click", function() {
-        // context.drawImage(video, 0, 0, 640, 480);
-        // });
     </script>
 </body>
 </html>

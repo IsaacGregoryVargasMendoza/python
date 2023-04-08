@@ -1,4 +1,4 @@
-from flask import Flask, render_template, Response
+from flask import Flask, render_template, Response, request
 # from flask_socketio import SocketIO, emit
 from typing import Counter
 from cvzone.HandTrackingModule import HandDetector
@@ -7,6 +7,10 @@ import numpy as np
 import math
 import cv2
 import mediapipe as mp
+import base64
+import io, base64
+from PIL import Image
+from io import BytesIO
 
 
 detector = HandDetector(maxHands=1)
@@ -22,14 +26,6 @@ counter = 0
 labels = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
 
 app = Flask(__name__)
-# app.config['SECRET_KEY'] = "secret:"
-# socketio = SocketIO(app)
-# print(socketio)
-
-# @socketio.on('message')
-# def mostrarMensaje(msg):
-#     print("message: " + msg)
-#     emit('message', msg)
 
 def removeDuplicates(s):
     chars = []
@@ -107,14 +103,76 @@ def generar_frame():
 def index():
     return render_template('index.html')
 
-@app.route('/camaraweb')
-def camaraweb():
-    return render_template('video.html')
+@app.route('/obtener-letra', methods=['POST'])
+def obtenerLetra():
+    print("recibi la imagen")
+    # cap = base64.b64decode(request.json['imagen'].replace("data:image/png;base64,",""))
+    decoded_bytes = base64.b64decode(request.json['imagen'].split(",")[1])
 
-@app.route('/video')
-def video():
-    print(Response(generar_frame(),mimetype='multipart/x-mixed-replace; boundary=frame'))
-    return Response(generar_frame(),mimetype='multipart/x-mixed-replace; boundary=frame')
+    # imgAux = Image.open(io.BytesIO(decoded_bytes))
+
+    # np_array = np.asarray(imgAux, dtype=np.uint8)
+
+    # print(np_array)
+
+    filename = 'some_image.jpg'
+
+    with open(filename, 'wb') as f:
+        f.write(decoded_bytes)
+
+    img = cv2.imread(filename)
+    img = cv2.flip(img, 1)
+
+    # img = cv2.flip(np_array,1)
+
+    # imagensalida = img.copy()
+    hands, img = detector.findHands(img)
+    # cv2.putText(imagensalida,"NADA",(10,30),cv2.FONT_HERSHEY_COMPLEX,0.6,(20, 56, 167),1)
+    if hands:
+        print("entre a Hands")
+        hand = hands[0]
+        x,y,w,h = hand['bbox']
+
+        imgWhite=np.ones((imgSize,imgSize,3),np.uint8)*255
+        imgCrop = img[y-offset:y+h+offset, x-offset:x+w+offset]
+
+        aspectRatio = h/w
+
+        if aspectRatio>1:
+            try:
+                k = imgSize/h
+                wCal = math.ceil(k * w)
+                imgResize = cv2.resize(imgCrop,(wCal,imgSize))
+                wGap = math.ceil((imgSize-wCal)/2)
+                imgWhite[:,wGap:wCal+wGap] = imgResize
+                prediccion, index = clasificador.getPrediction(imgWhite,draw=False)
+                if prediccion[index] > 0.90:
+                    # palabras = "palabras" + str(labels[index])
+                    print(prediccion[index])
+                    # pedido = removeDuplicates(palabras)
+                    return labels[index]
+                    # cv2.putText(imagensalida,labels[index],(x,y-20),cv2.FONT_HERSHEY_COMPLEX,2,(255,0,255),2)
+                    # cv2.rectangle(imagensalida,(x - offset, y - offset),(x + w + offset,y + h + offset),(255,0,255),4)
+            except:
+                print("Se salio fuera de los margenes de la camara")
+        else:
+            try:
+                k = imgSize/w
+                hCal = math.ceil(k * h)
+                imgResize = cv2.resize(imgCrop,(imgSize,hCal))
+                hGap = math.ceil((imgSize-hCal)/2)
+                imgWhite[hGap:hCal+hGap,:] = imgResize
+                prediccion, index = clasificador.getPrediction(imgWhite,draw=False)
+                if prediccion[index] > 0.90:
+                    # palabras = "palabras" + str(labels[index])
+                    print(prediccion[index])
+                    # pedido = removeDuplicates(palabras)
+                    return labels[index]
+                    # cv2.putText(imagensalida,labels[index],(x,y-20),cv2.FONT_HERSHEY_COMPLEX,2,(255,0,255),2)
+                    # cv2.rectangle(imagensalida,(x - offset, y - offset),(x + w + offset,y + h + offset),(255,0,255),4)
+            except:
+                print("Se salio fuera de los margenes de la camara")
+    return "-1"
 
 @app.route('/pagina')
 def pagina():
