@@ -8,7 +8,7 @@ import math
 import cv2
 import mediapipe as mp
 
-cap = cv2.VideoCapture(0)
+
 detector = HandDetector(maxHands=1)
 clasificador = Classifier("Models/keras_model.h5","Models/labels.txt")
 global pedido
@@ -43,6 +43,7 @@ def removeDuplicates(s):
     return ''.join(chars)
 
 def generar_frame():
+    cap = cv2.VideoCapture(0)
     global pedido
     pedido = "NO TIENE PEDIDO"
     palabras = ""
@@ -106,8 +107,13 @@ def generar_frame():
 def index():
     return render_template('index.html')
 
+@app.route('/camaraweb')
+def camaraweb():
+    return render_template('video.html')
+
 @app.route('/video')
 def video():
+    print(Response(generar_frame(),mimetype='multipart/x-mixed-replace; boundary=frame'))
     return Response(generar_frame(),mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/pagina')
