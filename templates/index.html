@@ -6,26 +6,96 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/estilosVideo.css') }}">
-    <title>Lectura de lenguaje de señas</title>
+    <title>San Agustin</title>
     <style >
         video {
             -webkit-transform: scaleX(-1);
             transform: scaleX(-1);
         }
+
+        .carousel-inner img {
+            /* width: 100%; */
+            /* margin: 50px; */
+            margin: 0px;
+            width: 200px;
+            height: 250px;
+            max-height: 460px;
+        }
+
+        .contenedor-carrusel{
+            margin: 50px;
+        }
+
+        .carousel-inner{
+            /* margin: 50px; */
+            /* margin-right: 50px; */
+            height: 250px;
+        }
+        
 	</style>
 </head>
 <body>
-    
     <div class="text-center">
         <div class="main-header">
+
             <div class="background-overlay">
                 <h1 class="text-center text-white">Ingrese su pedido en lenguaje de señas</h1>
                 <input type="text" id="txtPalabras">
+                <div class="contenedor-carrusel">
+                    <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                          <div class="carousel-item active">
+                            <img src="/static/imagenes-productos/batido-san-agustin.png" class="d-inline" alt="...">
+                            <img src="/static/imagenes-productos/jugo-pinia.png" class="d-inline" alt="...">
+                            <img src="/static/imagenes-productos/jugo-papaya.png" class="d-inline" alt="...">
+                            <img src="/static/imagenes-productos/jugo-naranja.png" class="d-inline" alt="...">
+                            <img src="/static/imagenes-productos/jugo-maracuya.png" class="d-inline" alt="...">
+                            <img src="/static/imagenes-productos/jugo-mango.png" class="d-inline" alt="...">
+                            <img src="/static/imagenes-productos/coca-cola.png" class="d-inline" alt="...">
+                          </div>
+                          <div class="carousel-item">
+                            <img src="/static/imagenes-productos/ponche-fruta.png" class="d-inline" alt="...">
+                            <img src="/static/imagenes-productos/ponche-leche.png" class="d-inline" alt="...">
+                            <img src="/static/imagenes-productos/cafe.png" class="d-inline" alt="...">
+                            <img src="/static/imagenes-productos/leche-sola.png" class="d-inline" alt="...">
+                            <img src="/static/imagenes-productos/leche-con-milo.png" class="d-inline" alt="...">
+                            <img src="/static/imagenes-productos/leche-con-cafe.png" class="d-inline" alt="...">
+                            <img src="/static/imagenes-productos/infusiones.png" class="d-inline" alt="...">
+                          </div>
+                          <div class="carousel-item">
+                            <img src="/static/imagenes-productos/chocolate-con-leche.png" class="d-inline" alt="...">
+                            <img src="/static/imagenes-productos/chocolate-sin-leche.png" class="d-inline" alt="...">
+                            <img src="/static/imagenes-productos/chicha.png" class="d-inline" alt="...">
+                            <img src="/static/imagenes-productos/ref-naranja.png" class="d-inline" alt="...">
+                            <img src="/static/imagenes-productos/ref-maracuya.png" class="d-inline" alt="...">
+                            <img src="/static/imagenes-productos/san-triple.png" class="d-inline" alt="...">
+                            <img src="/static/imagenes-productos/san-ternera.png" class="d-inline" alt="...">
+                          </div>
+                          <div class="carousel-item">
+                            <img src="/static/imagenes-productos/san-pollo.png" class="d-inline" alt="...">
+                            <img src="/static/imagenes-productos/san-pavo.png" class="d-inline" alt="...">
+                            <img src="/static/imagenes-productos/san-lechon.png" class="d-inline" alt="...">
+                            <img src="/static/imagenes-productos/san-asado.png" class="d-inline" alt="...">
+                            <img src="/static/imagenes-productos/san-chicharron.png" class="d-inline" alt="...">
+                            <img src="/static/imagenes-productos/san-butifarra.png" class="d-inline" alt="...">
+                            <img src="/static/imagenes-productos/san-hot-dog.png" class="d-inline" alt="...">
+                          </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="prev">
+                          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                          <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="next">
+                          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                          <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                </div>
                 <div class="video-wrap">
-                    <video id="video" width="800" height="800" playsinline autoplay></video>
+                    <video id="video" width="500" height="300" playsinline autoplay></video>
                 </div>
 
-                <canvas id="canvas" width="800" height="800" style="max-width: 100%;"></canvas>
+                <canvas id="canvas" width="800" height="800" style="max-width: 100%;" hidden></canvas>
                 <div class="text-center">
                     <a href="/pagina" class="btn btn-primary">Limpiar</a>
                     <a href="/pagina" class="btn btn-primary"><</a>
@@ -38,6 +108,7 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/hand-pose-detection"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script>
         const video = document.getElementById('video');
         var canvas = document.getElementById("canvas");
@@ -47,12 +118,14 @@
         var size = 800;
 
         window.onload = function() {
+
           mostrarCamara();
         }
 
         // Acceso a la webcam
         function mostrarCamara() {
             try {
+
                 const constraints = {
                     audio: false,
                     video: {
@@ -78,6 +151,7 @@
                 }
                 
             } catch (e) {
+                alert(e);
             }
         }
 
@@ -88,16 +162,6 @@
         }
 
         async function predecir() {
-
-            // var ctx2 = canvas.getContext("2d");
-            // ctx2.getImageData(0,0,800,800);
-            // canvas.toDataURL();
-            // console.log(canvas.toDataURL());
-            //console.log("prueba..");
-
-            // var fd = new FormData();
-            // const file = new File([blob], "filename.jpeg");
-            // fd.append('imagen', canvas.toDataURL());
             var response = await fetch('http://127.0.0.1:5000/obtener-letra',
             {
                 method: 'POST',
@@ -115,7 +179,6 @@
                 palabras.value = palabras.value + text;
             }
             setTimeout(predecir, 500);
-
         }
 
     </script>
