@@ -162,7 +162,8 @@
         }
 
         async function predecir() {
-            var response = await fetch('http://127.0.0.1:5000/obtener-letra',
+            // alert(location.href);
+            var response = await fetch(location.href + 'obtener-letra',
             {
                 method: 'POST',
                 body: JSON.stringify({
