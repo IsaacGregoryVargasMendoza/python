@@ -9,12 +9,13 @@ import cv2
 import mediapipe as mp
 import base64
 import io, base64
-from PIL import Image, ImageOps
-from io import BytesIO
+# from PIL import Image, ImageOps
+# from io import BytesIO
 import os
-from keras.models import load_model
+# from keras.models import load_model
 
-detector = HandDetector(maxHands=1)
+# detector = HandDetector(maxHands=1)
+detector = HandDetector()
 clasificador = Classifier(os.path.dirname(__file__) + "/Models/keras_model.h5",os.path.dirname(__file__) + "/Models/labels.txt")
 
 # model = load_model("keras_Model.h5", compile=False)
@@ -158,6 +159,7 @@ def obtenerLetra():
                     # cv2.rectangle(imagensalida,(x - offset, y - offset),(x + w + offset,y + h + offset),(255,0,255),4)
             except:
                 print("Se salio fuera de los margenes de la camara")
+                return "-1"
         else:
             try:
                 k = imgSize/w
@@ -175,6 +177,7 @@ def obtenerLetra():
                     # cv2.rectangle(imagensalida,(x - offset, y - offset),(x + w + offset,y + h + offset),(255,0,255),4)
             except:
                 print("Se salio fuera de los margenes de la camara")
+                return "-1"
     return "-1"
 
 @app.route('/pagina')
@@ -183,5 +186,5 @@ def pagina():
     return "tengo el pedido de: "
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)
     # socketio.run(app)
